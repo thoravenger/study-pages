@@ -1,0 +1,22 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Saved Posts · Post</title><link rel="stylesheet" href="assets/app.css"></head><body>
+<div id="nav"></div>
+<main class="wrap one single"><section id="main"></section></main>
+<script src="assets/data.js"></script><script src="assets/common.js"></script>
+<script>
+(function(){
+const {P,BYID,esc,postCard,nav,bindCommon,qs,sorted,chip}=SP;
+document.getElementById('nav').innerHTML=nav('');
+const id=parseInt(qs().get('id'),10);const p=BYID[id];const m=document.getElementById('main');
+if(!p){m.innerHTML=`<div class="card empty">Post not found. <a href="index.html">Back to the feed</a></div>`;return}
+document.title=`#${p.id} ${p.author} · My Saved Posts`;
+const order=sorted('newest');const i=order.findIndex(x=>x.id===p.id);
+const prev=order[i-1],next=order[i+1];
+const lnk=(x,lbl,dir)=>x?`<a class="btn" href="post.html?id=${x.id}" title="${esc(x.author)}">${dir==='p'?'← ':''}${lbl}${dir==='n'?' →':''}</a>`:`<a class="btn" aria-disabled="true">${dir==='p'?'← ':''}${lbl}${dir==='n'?' →':''}</a>`;
+m.innerHTML=`<div class="crumbs"><a href="index.html">Feed</a> › ${chip(p.topic,true)} › Post #${p.id}</div>`+postCard(p,{full:true})+
+ `<div class="card pager">${lnk(prev,'Newer','p')}<span class="mid">${i+1} of ${order.length}</span>${lnk(next,'Older','n')}</div>`+
+ `<div style="text-align:center;margin:14px 0"><a class="btn solid" href="index.html?author=${encodeURIComponent(p.author)}">More from ${esc(p.author)}</a></div>`;
+document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;if(e.key==='ArrowLeft'&&prev)location.href='post.html?id='+prev.id;if(e.key==='ArrowRight'&&next)location.href='post.html?id='+next.id});
+bindCommon(document.body);window.__ready=true;
+})();
+</script></body></html>
